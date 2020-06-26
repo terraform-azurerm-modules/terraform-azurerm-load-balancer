@@ -1,19 +1,12 @@
-# terraform-azurerm-set
+# terraform-azurerm-load-balancer
 
 ## Description
 
-This Terraform module creates a "set", ready for VMs to be created. Resources created:
-
-* application security group (always)
-* availability set (bool)
-* load balancer (bool)
-* app gateway backend pool (bool)
-
-> This is a WORK IN PROGRESS and will definitely change. Support is yet to be added for both basic load balancer creation and association with App Gateway backend pools.
+This Terraform module creates a standardised load balancer and availaibility set.
 
 ## Example
 
-> CLEAN UP THE EXAMPLE TO BE A FULL STANDALONE CONFIG
+> CLEAN UP THE EXAMPLE TO BE A FULL STANDALONE CONFIG WITH A VNET & SUBNET. And add in details for variables and outputs plus the use of the defaults.
 
 ```terraform
 locals {
@@ -21,10 +14,12 @@ locals {
     module_depends_on    = [ azurerm_resource_rg ]
     resource_group_name  = azurerm_resource_group.rg.name
     location             = azurerm_resource_group.rg.location
+    tags                 = azurerm_resource_group.rg.tags
+    subnet_id            = <subnet_id>
 }
 
 resource "azurerm_resource_group" "rg" {
-  name                = "set-example"
+  name                = "lb-example"
   location            = "West Europe"
   tags                 = {
       owner = "Richard Cheney",
@@ -33,10 +28,9 @@ resource "azurerm_resource_group" "rg" {
 
 }
 
-module "set_example" {
-  source        = "https://github.com/terraform-azurerm-modules/terraform-azurerm-set"
+module "lb_example" {
+  source        = "https://github.com/terraform-azurerm-modules/terraform-azurerm-local-balancer"
   defaults      = local.defaults
-  name          = "set-example"
-  load_balancer = true
+  name          = "lb-example"
 }
 ```
