@@ -15,6 +15,9 @@ locals {
   }
 }
 
+/*
+// Removed availability set creation - automate within vm modules instead
+// May move lb as sub module to both vm and vmss in future
 resource "azurerm_availability_set" "lb" {
   depends_on          = [var.module_depends_on]
   name                = var.name
@@ -22,6 +25,7 @@ resource "azurerm_availability_set" "lb" {
   location            = local.location
   tags                = local.tags
 }
+*/
 
 resource "azurerm_lb" "lb" {
   depends_on          = [var.module_depends_on]
