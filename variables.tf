@@ -24,6 +24,7 @@ variable "tags" {
 variable "subnet_id" {
   description = "Resource ID for the subnet to attach the load balancer's front-end."
   type        = string
+  default     = ""
 }
 
 variable "load_balancer_rules" {
@@ -49,16 +50,16 @@ variable "load_balancer_rules" {
 variable "defaults" {
   description = "Optional collection of user configurable default values."
   type = object({
-    resource_group_name  = string
-    location             = string
-    tags                 = map(string)
-    subnet_id            = string
+    resource_group_name = string
+    location            = string
+    tags                = map(string)
+    subnet_id           = string
   })
   default = {
-    resource_group_name  = null
-    location             = null
-    tags                 = {}
-    subnet_id            = null
+    resource_group_name = null
+    location            = null
+    tags                = {}
+    subnet_id           = null
   }
 }
 

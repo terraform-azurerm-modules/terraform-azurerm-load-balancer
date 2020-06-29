@@ -15,7 +15,7 @@ locals {
   }
 }
 
-resource "azurerm_availability_set" "set" {
+resource "azurerm_availability_set" "lb" {
   depends_on          = [var.module_depends_on]
   name                = var.name
   resource_group_name = local.resource_group_name
@@ -23,7 +23,7 @@ resource "azurerm_availability_set" "set" {
   tags                = local.tags
 }
 
-resource "azurerm_lb" "set" {
+resource "azurerm_lb" "lb" {
   depends_on          = [var.module_depends_on]
   name                = var.name
   resource_group_name = local.resource_group_name
@@ -39,31 +39,31 @@ resource "azurerm_lb" "set" {
   }
 }
 
-resource "azurerm_lb_backend_address_pool" "set" {
+resource "azurerm_lb_backend_address_pool" "lb" {
   resource_group_name = local.resource_group_name
-  loadbalancer_id     = azurerm_lb.set[var.name].id
+  loadbalancer_id     = azurerm_lb.lb.id
   name                = var.name
 }
 
-resource "azurerm_lb_probe" "set" {
+resource "azurerm_lb_probe" "lb" {
   for_each            = local.load_balancer_rules_map
   name                = "probe-port-${each.value.backend_port}"
   resource_group_name = local.resource_group_name
-  loadbalancer_id     = azurerm_lb.set.id
+  loadbalancer_id     = azurerm_lb.lb.id
   port                = each.value.backend_port // local.probe_port
 }
 
-resource "azurerm_lb_rule" "set" {
+resource "azurerm_lb_rule" "lb" {
   for_each                       = local.load_balancer_rules_map
   name                           = each.value.name
   resource_group_name            = local.resource_group_name
-  loadbalancer_id                = azurerm_lb.set.id
+  loadbalancer_id                = azurerm_lb.lb.id
   protocol                       = each.value.protocol
   frontend_port                  = each.value.frontend_port
   backend_port                   = each.value.backend_port
   frontend_ip_configuration_name = "InternalIpAddress"
-  backend_address_pool_id        = azurerm_lb_backend_address_pool.set.id
-  probe_id                       = azurerm_lb_probe.set.id
+  backend_address_pool_id        = azurerm_lb_backend_address_pool.lb.id
+  probe_id                       = azurerm_lb_probe.lb[each.value.name].id
 
   // Resource defaults as per https://www.terraform.io/docs/providers/azurerm/r/lb_rule.html
   enable_floating_ip      = false
