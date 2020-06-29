@@ -36,7 +36,7 @@ resource "azurerm_subnet" "example" {
 }
 
 module "example-lb" {
-  source        = "https://github.com/terraform-azurerm-modules/terraform-azurerm-local-balancer"
+  source = "https://github.com/terraform-azurerm-modules/terraform-azurerm-load-balancer"
 
   name                = "lb-example"
   resource_group_name = azurerm_resource_group.example.name
